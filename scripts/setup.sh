@@ -2,8 +2,8 @@
 
 
 ## LOADING HELPER FUNCTIONS
-. ./symlink_utils.sh
 . ./log_utils.sh
+. ./symlink_utils.sh
 
 
 ## CONFIGURATION VARIABLES

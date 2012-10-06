@@ -59,7 +59,9 @@ if [ "`git rev-parse --is-inside-work-tree`" ]; then
 else
 	log "Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
 	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
-	if [ ! "`git rev-parse --is-inside-work-tree`" ]; then 
+	if [ "`git rev-parse --is-inside-work-tree`" ]; then 
+		log "Could not clone the repository as authenticated user. Going to use read-only mode."
+	else
 		git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	fi
 fi

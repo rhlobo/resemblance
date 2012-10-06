@@ -87,6 +87,7 @@ cd -
 
 ## CONFIGURATING HOST
 if [ -f "${SETUP_CONFIG_FILE}" ]; then
+	log "Loading setup configuration script '${SETUP_CONFIG_FILE}'."
 	. ${SETUP_CONFIG_FILE}
 else
 	log "NOT POSSIBLE TO FIND '${SETUP_CONFIG_FILE}'. ABORTING..."

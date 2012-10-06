@@ -2,8 +2,9 @@
 
 
 ## LOADING HELPER FUNCTIONS
-. ${SCRIPT_CURRENT_PATH}/../scripts/utils/symlink.sh
-. ${SCRIPT_CURRENT_PATH}/../scripts/utils/config.sh
+if [ ! -d "${SCRIPTS_ORIGIN_PATH}" ]; then SCRIPTS_ORIGIN_PATH="${HOME}/scripts"
+. ${SCRIPTS_ORIGIN_PATH}/utils/symlink.sh
+. ${SCRIPTS_ORIGIN_PATH}/utils/config.sh
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY

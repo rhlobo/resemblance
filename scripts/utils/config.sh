@@ -45,20 +45,28 @@ updateHostDependenciesDescription() {
 	BASE_CONFIG_PATH=$1
 	ENV_NAME=$2
 	ENV_CONFIG_PATH="${BASE_CONFIG_PATH}/${ENV_NAME}"
-	DEPENDENCIES_FILE="${ENV_CONFIG_PATH}/DEPENDENCIES_FILE_NAME"
+	DEPENDENCIES_FILE="${ENV_CONFIG_PATH}/${DEPENDENCIES_FILE_NAME}"
+	OLD_DEPENDENCIES_FILE="${ENV_CONFIG_PATH}/${DEFAULT_DEPENDENCIES_FILE_NAME}"
 
 	_assureHostConfigDirectory "${BASE_CONFIG_PATH}" "${ENV_NAME}"
 
 	log "Updating host's installed package list '${DEPENDENCIES_FILE}'."
 	sudo dpkg --get-selections | sed "s/.*deinstall//" | sed "s/install$//g" > "${DEPENDENCIES_FILE}"
 
-	log "Creating installation script that reproduces this host in "
-	PACKAGES=$(cat "${DEPENDENCIES_FILE}")
-	echo "" > "${DEPENDENCIES_SCRIPT_FILE_NAME}"
+	log "---------------------------------------------------------------------"
+	createDependencyInstallationScript "${OLD_DEPENDENCIES_FILE}" "${DEPENDENCIES_FILE}"
+}
+
+createDependencyInstallationScript() {
+	local FILE1 FILE2 PACKAGES i aux
+	FILE1=$1
+	FILE2=$2
+
+	PACKAGES=$(diff -uNr ${FILE1} ${FILE2} | grep "^[-+][^-+]\S*")
 	for i in $(echo ${PACKAGES}); do
 		aux=$(apt-cache search ${i} | grep "^${i}\s.*$" | sed "s/^\S*\s-\s//g")
-		echo -e "#*** ${aux}" >> "${DEPENDENCIES_SCRIPT_FILE_NAME}"
-		echo -e "${i}" >> "${DEPENDENCIES_SCRIPT_FILE_NAME}"
-		echo -e "" >> "${DEPENDENCIES_SCRIPT_FILE_NAME}"
+		echo "#*** ${aux}"
+		echo "${i}"
+		echo ""
 	done
 }

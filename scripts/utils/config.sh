@@ -7,7 +7,22 @@ DEFAULT_DEPENDENCIES_FILE_NAME="../common.dependency.list"
 
 
 ## LOADING HELPER FUNCTIONS
-. "$(dirname $(readlink -f $0))/log.sh"
+loadScript() {
+	#v0.1
+	local UTIL_SCRIPT_FILE UTIL_SCRIPT_FILENAME
+	UTIL_SCRIPT_FILENAME=$1
+
+	if [ -f "$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME" ]; then 
+		UTIL_SCRIPT_FILE="$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME"
+	elif [ -d "${SCRIPTS_ORIGIN_PATH}" ]; then 
+		UTIL_SCRIPT_FILE="${SCRIPTS_ORIGIN_PATH}/${UTIL_SCRIPT_FILENAME}"
+	else 
+		UTIL_SCRIPT_FILE="${HOME}/scripts/${UTIL_SCRIPT_FILENAME}"
+	fi
+
+	. "${UTIL_SCRIPT_FILE}"
+}
+loadScript "/utils/log.sh"
 
 
 _assureHostConfigDirectory() {

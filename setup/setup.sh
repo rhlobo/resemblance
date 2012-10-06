@@ -1,10 +1,11 @@
 #!/bin/bash
-
+sudo echo ""
 
 ## CONFIGURATION VARIABLES
 ### Base setup path
 BASE_PATH="/home/shared"
 GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"
+GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"
 
 
 ## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)
@@ -21,7 +22,7 @@ GIT_LOCAL_BRANCH="work"
 
 ## DEFINING HELPER FUNCTIONS
 log() {
-	echo -e "$@" >&2
+	echo "$@" >&2
     return 0
 }
 
@@ -57,7 +58,7 @@ if [ "`git rev-parse --is-inside-work-tree`" ]; then
 	log "The local repository is already set." 
 else
 	log "Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
-	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
+	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH} || git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 fi
 #### Create a branch [if needed]
 log "Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 

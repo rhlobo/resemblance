@@ -58,7 +58,10 @@ if [ "`git rev-parse --is-inside-work-tree`" ]; then
 	log "The local repository is already set." 
 else
 	log "Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
-	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH} || git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
+	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
+	if [ ! "`git rev-parse --is-inside-work-tree`" ]; then 
+		git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
+	fi
 fi
 #### Create a branch [if needed]
 log "Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 

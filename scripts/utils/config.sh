@@ -33,10 +33,10 @@ _assureHostConfigDirectory() {
 
 	log "Assuring host configuration directory existence."
 	if [ ! -d "${ENV_CONFIG_PATH}" ]; then
-		log "\t Creating host configuration directory '${ENV_CONFIG_PATH}'"
+		log "Creating host configuration directory '${ENV_CONFIG_PATH}'"
 		mkdir -p "${ENV_CONFIG_PATH}"
 	else
-		log "\t Host configuration directory already exists in '${ENV_CONFIG_PATH}'."
+		log "Host configuration directory already exists in '${ENV_CONFIG_PATH}'."
 	fi
 }
 
@@ -58,15 +58,21 @@ updateHostDependenciesDescription() {
 }
 
 createDependencyInstallationScript() {
-	local FILE1 FILE2 PACKAGES i aux
+	local FILE1 FILE2 PACKAGES PACKAGES_TO_INSTALL i aux
 	FILE1=$1
 	FILE2=$2
 
+	log "Creating dependency installation script from '${FILE1}' to '${FILE2}'."
+	if [ ! -f "${FILE1}" ]; then log "- '${FILE1}' does not exist."; fi
+	if [ ! -f "${FILE2}" ]; then log "- '${FILE2}' does not exist."; fi
+
 	PACKAGES=$(diff -uNr ${FILE1} ${FILE2} | grep "^[-+][^-+]\S*")
-	for i in $(echo ${PACKAGES}); do
+	PACKAGES_TO_INSTALL=$(diff -uNr ${FILE1} ${FILE2} | grep "^[+][^-+]\S*" | sed "s/^[-+]//g")
+	PACKAGES_TO_UNINSTALL=$(diff -uNr ${FILE1} ${FILE2} | grep "^[-][^-+]\S*" | sed "s/^[-+]//g")
+	for i in $(echo ${PACKAGES_TO_INSTALL}); do
 		aux=$(apt-cache search ${i} | grep "^${i}\s.*$" | sed "s/^\S*\s-\s//g")
 		echo "#*** ${aux}"
-		echo "${i}"
+		echo "+${i}"
 		echo ""
 	done
 }

@@ -26,7 +26,7 @@ loadScript "/utils/config.sh"
 assureSymlink ${SCRIPTS_ORIGIN_PATH} ${SCRIPTS_LINK_PATH}
 
 ### Update machine dependency (package) list
-updateHostDependenciesDescription "${CONFIG_BASE_PATH}" "${HOST_NAME}"
+updateHostDependenciesDescription "${HOST_CONFIG_BASE_PATH}" "${HOST_NAME}"
 
 
 #!!!!!!!!!!!!!! SHOULD CALL ANOTHER SCRIPT

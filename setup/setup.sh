@@ -16,6 +16,7 @@ SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"
 SCRIPTS_ORIGIN_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"
 SCRIPTS_LINK_PATH="${HOME}/scripts"
 CONFIG_BASE_PATH="${HOME}/config/hosts"
+SETUP_BASE_PATH="${HOME}/config/setup"
 EXECUTION_PATH="$(pwd)"
 HOST_NAME="${hostname}"
 GIT_LOCAL_BRANCH="work"
@@ -79,7 +80,7 @@ cd -
 
 
 ## CONFIGURATING HOST
-. ${SCRIPT_CURRENT_PATH}/config.sh
+. ${SETUP_BASE_PATH}/config.sh
 
 
 ## FINALIZING SETUP

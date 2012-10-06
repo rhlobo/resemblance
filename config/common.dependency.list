@@ -215,8 +215,6 @@ gir1.2-unity-5.0
 gir1.2-vte-2.90					
 gir1.2-webkit-3.0				
 gir1.2-wnck-3.0					
-git						
-git-man						
 gksu						
 glib-networking					
 glib-networking-common				
@@ -474,7 +472,6 @@ libedataserverui-3.0-1
 libedit2					
 libelf1						
 libenchant1c2a					
-liberror-perl					
 libespeak1					
 libevent-2.0-5					
 libevince3-3					
@@ -528,7 +525,6 @@ libgirepository-1.0-1
 libgksu2-0					
 libgl1-mesa-dri					
 libgl1-mesa-glx					
-libglade2-0					
 libglapi-mesa					
 libglew1.6					
 libglewmx1.6					
@@ -1005,8 +1001,8 @@ ncurses-bin
 net-tools					
 netbase						
 netcat-openbsd					
-
-
+network-manager					
+network-manager-gnome				
 network-manager-pptp				
 network-manager-pptp-gnome			
 notify-osd					
@@ -1096,7 +1092,6 @@ python-gconf
 python-gdbm					
 python-gi					
 python-gi-cairo					
-python-glade2					
 python-gnomekeyring				
 python-gnupginterface				
 python-gobject					
@@ -1148,7 +1143,6 @@ python-ubuntuone-storageprotocol
 python-uno					
 python-virtkey					
 python-wadllib					
-python-wicd					
 python-xapian					
 python-xdg					
 python-xkit					
@@ -1308,9 +1302,6 @@ wget
 whiptail					
 whois						
 whoopsie					
-wicd						
-wicd-daemon					
-wicd-gtk					
 wireless-regdb					
 wireless-tools					
 wodim						

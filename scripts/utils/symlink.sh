@@ -1,5 +1,12 @@
+#!/bin/bash
+
+
+## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)
+SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"
+
+
 ## LOADING HELPER FUNCTIONS
-. ./log_utils.sh
+. ${SCRIPT_CURRENT_PATH}/log_utils.sh
 
 
 assureSymlink() {
@@ -20,7 +27,7 @@ assureSymlink() {
 		log "\tOld symlink ${LINK} renamed."
 	elif [ -d "${LINK}" ] || [ -f "${LINK}" ]; then
 		if [ -f "${LINK}" ]; then
-			PATCH_FILE="${INTENDED_LINK_TARGET}.`date +%F-%T`.patch"
+			PATCH_FILE="${INTENDED_LINK_TARGET}_`hostname`_`date +%F_%T`.patch"
 			diff -uNr "${INTENDED_LINK_TARGET}" "${LINK}" > "${PATCH_FILE}"
 			log "\tFile ${LINK} already exists but will be replaced. Rollback patch created: '${PATCH_FILE}'"
 		fi

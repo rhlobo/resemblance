@@ -4,7 +4,8 @@ sudo echo ""
 ## CONFIGURATION VARIABLES
 ### Base setup path
 BASE_PATH="/home/shared"
-GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"
+GIT_REPOSITORY_URL="https://github.com/rhlobo/homeConfig.git"
+# GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"
 GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"
 
 
@@ -60,8 +61,9 @@ else
 	log "Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
 	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	if [ "`git rev-parse --is-inside-work-tree`" ]; then 
-		log "Could not clone the repository as authenticated user. Going to use read-only mode."
+		log "The local repository was set." 
 	else
+		log "Could not clone the repository as authenticated user. Going to use read-only mode."
 		git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	fi
 fi

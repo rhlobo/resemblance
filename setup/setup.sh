@@ -28,8 +28,8 @@ log() {
 
 ## INSTALLING DEPENDENCIES
 ### Installing git
-log "Assuring git is installed and updated..." 
-sudo apt-get install git
+log "Assuring that git is installed and updated..." 
+sudo apt-get -y install git
 
 
 ## SETUP BASE PATH

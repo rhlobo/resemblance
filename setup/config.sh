@@ -7,20 +7,18 @@ loadScript() {
 	local UTIL_SCRIPT_FILE UTIL_SCRIPT_FILENAME
 	UTIL_SCRIPT_FILENAME=$1
 
-	UTIL_SCRIPT_FILE="$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME"
-	if [ -f "${UTIL_SCRIPT_FILE}" ]; then ."${UTIL_SCRIPT_FILE}"; return;
+	if [ -f "$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME" ]; then 
+		UTIL_SCRIPT_FILE="$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME"
 	elif [ -d "${SCRIPTS_ORIGIN_PATH}" ]; then 
 		UTIL_SCRIPT_FILE="${SCRIPTS_ORIGIN_PATH}/${UTIL_SCRIPT_FILENAME}"
 	else 
 		UTIL_SCRIPT_FILE="${HOME}/scripts/${UTIL_SCRIPT_FILENAME}"
 	fi
 
-	if [ ! -f "${UTIL_SCRIPT_FILE}" ] then exit 1; fi
-
 	. "${UTIL_SCRIPT_FILE}"
 }
 loadScript "/utils/symlink.sh"
-loadScript "/utils/config.sh"
+loadScript "/utils/config.sh" 
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY

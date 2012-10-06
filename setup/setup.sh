@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo echo ""
+
+## COMMUNICATING SETUP
+sudo echo "Initializing setup"
+
 
 ## CONFIGURATION VARIABLES
 ### Base setup path

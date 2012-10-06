@@ -3,7 +3,7 @@
 ## CONFIGURATION VARIABLES
 DEPENDENCIES_FILE_NAME="dependency.list"
 DEPENDENCIES_SCRIPT_FILE_NAME="dependency.installation.script"
-DEFAULT_DEPENDENCIES_FILE_NAME="../common.dependency.list"
+DEFAULT_DEPENDENCIES_FILE_NAME="../../common.dependency.list"
 
 
 ## LOADING HELPER FUNCTIONS

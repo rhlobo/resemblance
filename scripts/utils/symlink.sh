@@ -6,7 +6,7 @@ SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"
 
 
 ## LOADING HELPER FUNCTIONS
-. ${SCRIPT_CURRENT_PATH}/log_utils.sh
+. ${SCRIPTS_ORIGIN_PATH}/utils/log.sh
 
 
 assureSymlink() {

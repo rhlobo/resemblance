@@ -2,9 +2,25 @@
 
 
 ## LOADING HELPER FUNCTIONS
-if [ ! -d "${SCRIPTS_ORIGIN_PATH}" ]; then SCRIPTS_ORIGIN_PATH="${HOME}/scripts"
-. ${SCRIPTS_ORIGIN_PATH}/utils/symlink.sh
-. ${SCRIPTS_ORIGIN_PATH}/utils/config.sh
+loadScript() {
+	#v0.1
+	local UTIL_SCRIPT_FILE UTIL_SCRIPT_FILENAME
+	UTIL_SCRIPT_FILENAME=$1
+
+	UTIL_SCRIPT_FILE="$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME"
+	if [ -f "${UTIL_SCRIPT_FILE}" ]; then ."${UTIL_SCRIPT_FILE}"; return;
+	elif [ -d "${SCRIPTS_ORIGIN_PATH}" ]; then 
+		UTIL_SCRIPT_FILE="${SCRIPTS_ORIGIN_PATH}/${UTIL_SCRIPT_FILENAME}"
+	else 
+		UTIL_SCRIPT_FILE="${HOME}/scripts/${UTIL_SCRIPT_FILENAME}"
+	fi
+
+	if [ ! -f "${UTIL_SCRIPT_FILE}" ] then exit 1; fi
+
+	. "${UTIL_SCRIPT_FILE}"
+}
+loadScript "/utils/symlink.sh"
+loadScript "/utils/config.sh"
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY

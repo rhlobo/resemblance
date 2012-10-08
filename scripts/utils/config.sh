@@ -1,35 +1,10 @@
-#!/bin/bash
-
-## CONFIGURATION VARIABLES
-DEPENDENCIES_FILE_NAME="dependency.list"
-DEPENDENCIES_SCRIPT_FILE_NAME="dependency.installation.script"
-DEFAULT_DEPENDENCIES_FILE_NAME="../../common.dependency.list"
-
-
 ## LOADING HELPER FUNCTIONS
-loadScript() {
-	#v0.1
-	local UTIL_SCRIPT_FILE UTIL_SCRIPT_FILENAME
-	UTIL_SCRIPT_FILENAME=$1
-
-	if [ -f "$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME" ]; then 
-		UTIL_SCRIPT_FILE="$(dirname $(readlink -f $0))/UTIL_SCRIPT_FILENAME"
-	elif [ -d "${SCRIPTS_ORIGIN_PATH}" ]; then 
-		UTIL_SCRIPT_FILE="${SCRIPTS_ORIGIN_PATH}/${UTIL_SCRIPT_FILENAME}"
-	else 
-		UTIL_SCRIPT_FILE="${HOME}/scripts/${UTIL_SCRIPT_FILENAME}"
-	fi
-
-	. "${UTIL_SCRIPT_FILE}"
-}
-loadScript "/utils/log.sh"
+. "${HOME}/scripts/utils/log.sh"
 
 
-_assureHostConfigDirectory() {
-	local BASE_CONFIG_PATH ENV_NAME ENV_CONFIG_PATH
-	BASE_CONFIG_PATH=$1 
-	ENV_NAME=$2
-	ENV_CONFIG_PATH="${BASE_CONFIG_PATH}/${ENV_NAME}"
+assureHostConfigDirectory() {
+	local ENV_CONFIG_PATH
+	ENV_CONFIG_PATH="$1"
 
 	log "Assuring host configuration directory existence."
 	if [ ! -d "${ENV_CONFIG_PATH}" ]; then
@@ -41,38 +16,58 @@ _assureHostConfigDirectory() {
 }
 
 updateHostDependenciesDescription() {
-	local BASE_CONFIG_PATH ENV_NAME ENV_CONFIG_PATH DEPENDENCIES_FILE PACKAGES i aux
-	BASE_CONFIG_PATH=$1
-	ENV_NAME=$2
-	ENV_CONFIG_PATH="${BASE_CONFIG_PATH}/${ENV_NAME}"
-	DEPENDENCIES_FILE="${ENV_CONFIG_PATH}/${DEPENDENCIES_FILE_NAME}"
-	OLD_DEPENDENCIES_FILE="${ENV_CONFIG_PATH}/${DEFAULT_DEPENDENCIES_FILE_NAME}"
-
-	_assureHostConfigDirectory "${BASE_CONFIG_PATH}" "${ENV_NAME}"
+	local DEPENDENCIES_FILE
+	DEPENDENCIES_FILE="$1"
 
 	log "Updating host's installed package list '${DEPENDENCIES_FILE}'."
-	sudo dpkg --get-selections | sed "s/.*deinstall//" | sed "s/install$//g" > "${DEPENDENCIES_FILE}"
+	sudo dpkg --get-selections | sed "s/\s*deinstall//" | sed "s/\s*install$//g" > "${DEPENDENCIES_FILE}"
+}
 
-	log "---------------------------------------------------------------------"
-	createDependencyInstallationScript "${OLD_DEPENDENCIES_FILE}" "${DEPENDENCIES_FILE}"
+_echoPackageToFile() {
+	local OUTPUT_FILE PACKAGE PREFIX_SYMBOL aux
+	OUTPUT_FILE=$1
+	PACKAGE=$2
+	PREFIX_SYMBOL=$3
+
+	aux=$(apt-cache search ${PACKAGE} | grep "^${PACKAGE}\s.*$" | sed "s/^\S*\s-\s//g")
+	_echoToOutAndFile "${OUTPUT_FILE}" "###### ${aux}"
+	_echoToOutAndFile "${OUTPUT_FILE}" "${PREFIX_SYMBOL}${PACKAGE}"
+	_echoToOutAndFile "${OUTPUT_FILE}" ""
+}
+
+_echoToOutAndFile() {
+	local MESSAGE OUTPUT_FILE
+	OUTPUT_FILE=$1
+	MESSAGE=$2
+
+	log "${MESSAGE}"
+	echo "${MESSAGE}" >> "${OUTPUT_FILE}"
 }
 
 createDependencyInstallationScript() {
-	local FILE1 FILE2 PACKAGES PACKAGES_TO_INSTALL i aux
+	local FILE1 FILE2 OUTPUT_FILE PACKAGES_TO_INSTALL PACKAGES_TO_UNINSTALL i
 	FILE1=$1
 	FILE2=$2
+	OUTPUT_FILE=$3
 
 	log "Creating dependency installation script from '${FILE1}' to '${FILE2}'."
 	if [ ! -f "${FILE1}" ]; then log "- '${FILE1}' does not exist."; fi
 	if [ ! -f "${FILE2}" ]; then log "- '${FILE2}' does not exist."; fi
 
-	PACKAGES=$(diff -uNr ${FILE1} ${FILE2} | grep "^[-+][^-+]\S*")
-	PACKAGES_TO_INSTALL=$(diff -uNr ${FILE1} ${FILE2} | grep "^[+][^-+]\S*" | sed "s/^[-+]//g")
-	PACKAGES_TO_UNINSTALL=$(diff -uNr ${FILE1} ${FILE2} | grep "^[-][^-+]\S*" | sed "s/^[-+]//g")
+	echo "" > "${OUTPUT_FILE}"
+	_echoToOutAndFile "${OUTPUT_FILE}" "## DEPENDENCY SYNC DESCRIPTION FILE"
+
+	_echoToOutAndFile "${OUTPUT_FILE}" " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	_echoToOutAndFile "${OUTPUT_FILE}" "#### PACKAGES TO UNINSTALL"
+	PACKAGES_TO_UNINSTALL=$(diff -adNrw --unified=1 --suppress-common-lines "${FILE1}" "${FILE2}" | grep "^[-][^-+]\S*" | sed "s/^[-+]//g")
+	for i in $(echo ${PACKAGES_TO_UNINSTALL}); do
+		_echoPackageToFile "${OUTPUT_FILE}" "${i}" "-"
+	done
+
+	_echoToOutAndFile "${OUTPUT_FILE}" " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	_echoToOutAndFile "${OUTPUT_FILE}" "#### PACKAGES TO INSTALL"
+	PACKAGES_TO_INSTALL=$(diff -adNrw --unified=1 --suppress-common-lines "${FILE1}" "${FILE2}" | grep "^[+][^-+]\S*" | sed "s/^[-+]//g")
 	for i in $(echo ${PACKAGES_TO_INSTALL}); do
-		aux=$(apt-cache search ${i} | grep "^${i}\s.*$" | sed "s/^\S*\s-\s//g")
-		echo "#*** ${aux}"
-		echo "+${i}"
-		echo ""
+		_echoPackageToFile "${OUTPUT_FILE}" "${i}" "+"
 	done
 }

@@ -5,7 +5,7 @@ sudo echo "Initializing setup"
 
 
 ## CONFIGURATION VARIABLES
-### Base setup path
+#### Base setup path
 BASE_PATH="/home/shared"
 GIT_REPOSITORY_URL="https://github.com/rhlobo/homeConfig.git"
 # GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"
@@ -13,19 +13,23 @@ GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"
 
 
 ## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)
-### User configurations, scripts and other files
+#### User configurations, scripts and other files
+GIT_LOCAL_BRANCH="work"
 GIT_LOCAL_REPOSITORY_PATH="${BASE_PATH}/repo"
 SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"
 SCRIPTS_ORIGIN_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"
 SCRIPTS_LINK_PATH="${HOME}/scripts"
 CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/config"
+HOST_NAME="$(hostname)"
 HOST_CONFIG_BASE_PATH="${CONFIG_BASE_PATH}/hosts"
+HOST_CONFIG_PATH="${HOST_CONFIG_BASE_PATH}/${HOST_NAME}"
+HOST_CONFIG_DEPENDENCIES_FILE="${HOST_CONFIG_PATH}/dependency.list"
+HOST_CONFIG_DEPENDENCIES_SCRIPT="${HOST_CONFIG_PATH}/dependency[common-current].sh"
+INITIAL_CONFIG_DEPENDENCIES_FILE="${CONFIG_BASE_PATH}/common.dependency.list"
 SETUP_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/setup"
 SETUP_SETUP_FILE="${SETUP_BASE_PATH}/setup.sh"
 SETUP_CONFIG_FILE="${SETUP_BASE_PATH}/config.sh"
 EXECUTION_PATH="$(pwd)"
-HOST_NAME="$(hostname)"
-GIT_LOCAL_BRANCH="work"
 
 
 ## DEFINING HELPER FUNCTIONS
@@ -36,13 +40,13 @@ log() {
 
 
 ## INSTALLING DEPENDENCIES
-### Installing git
+#### Installing git
 log "Assuring that git is installed and updated..." 
 sudo apt-get -y install git
 
 
 ## SETUP BASE PATH
-### Creating base path [if needed]
+#### Creating base path [if needed]
 if [ ! -d ${BASE_PATH} ]; then
 	log "Creating the base directory: '${BASE_PATH}'" 
 	sudo mkdir -p ${BASE_PATH}
@@ -51,15 +55,15 @@ fi
 
 
 ## LOADING USER HOME CONFIGURATION AND SCRIPTS DIRECTORY
-### Creating repository path [if needed]
+#### Creating repository path [if needed]
 if [ ! -d ${GIT_LOCAL_REPOSITORY_PATH} ]; then
 	log "Creating the repository directory: '${GIT_LOCAL_REPOSITORY_PATH}'" 
 	sudo mkdir -p ${GIT_LOCAL_REPOSITORY_PATH}
 	sudo chown ${USER}:${USER} ${GIT_LOCAL_REPOSITORY_PATH}
 fi
 
-### Clone script and configuration into local git repository
-#### Clone git repository [if needed]
+#### Clone script and configuration into local git repository
+###### Clone git repository [if needed]
 cd ${GIT_LOCAL_REPOSITORY_PATH}
 log "Checking if the local git repository is configured." 
 if [ "`git rev-parse --is-inside-work-tree`" ]; then 
@@ -74,7 +78,7 @@ else
 		git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	fi
 fi
-#### Create a branch [if needed]
+###### Create a branch [if needed]
 log "Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 
 git show-ref --verify --quiet refs/heads/${GIT_LOCAL_BRANCH} || {
 	log "Creating local branch '${GIT_LOCAL_BRANCH}'" 
@@ -96,9 +100,9 @@ fi
 
 
 ## FINALIZING SETUP
-### Returning to the execution directory
-log "Returning to the execution directory:" 
+#### Returning to the execution directory
+log "Returning to the execution directory" 
 cd "${EXECUTION_PATH}"
 
-### Displaying success message
+#### Displaying success message
 log "Setup complete."

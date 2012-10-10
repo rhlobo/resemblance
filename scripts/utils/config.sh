@@ -1,5 +1,9 @@
+## LOADING CONFIGURATION
+. "${HOME}/homeConfig"
+
+
 ## LOADING HELPER FUNCTIONS
-. "${HOME}/scripts/utils/log.sh"
+. "${SCRIPTS_ORIGIN_PATH}/utils/log.sh"
 
 
 assureHostConfigDirectory() {
@@ -57,14 +61,16 @@ createDependencyInstallationScript() {
 	echo "" > "${OUTPUT_FILE}"
 	_echoToOutAndFile "${OUTPUT_FILE}" "## DEPENDENCY SYNC DESCRIPTION FILE"
 
-	_echoToOutAndFile "${OUTPUT_FILE}" " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	_echoToOutAndFile "${OUTPUT_FILE}" ""
+	_echoToOutAndFile "${OUTPUT_FILE}" ""
 	_echoToOutAndFile "${OUTPUT_FILE}" "#### PACKAGES TO UNINSTALL"
 	PACKAGES_TO_UNINSTALL=$(diff -adNrw --unified=1 --suppress-common-lines "${FILE1}" "${FILE2}" | grep "^[-][^-+]\S*" | sed "s/^[-+]//g")
 	for i in $(echo ${PACKAGES_TO_UNINSTALL}); do
 		_echoPackageToFile "${OUTPUT_FILE}" "${i}" "-"
 	done
 
-	_echoToOutAndFile "${OUTPUT_FILE}" " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	_echoToOutAndFile "${OUTPUT_FILE}" ""
+	_echoToOutAndFile "${OUTPUT_FILE}" ""
 	_echoToOutAndFile "${OUTPUT_FILE}" "#### PACKAGES TO INSTALL"
 	PACKAGES_TO_INSTALL=$(diff -adNrw --unified=1 --suppress-common-lines "${FILE1}" "${FILE2}" | grep "^[+][^-+]\S*" | sed "s/^[-+]//g")
 	for i in $(echo ${PACKAGES_TO_INSTALL}); do

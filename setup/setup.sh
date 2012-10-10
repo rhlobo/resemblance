@@ -4,39 +4,52 @@
 sudo echo "Initializing setup"
 
 
-## CONFIGURATION VARIABLES
-#### Base setup path
-BASE_PATH="/home/shared"
-GIT_REPOSITORY_URL="https://github.com/rhlobo/homeConfig.git"
-# GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"
-GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"
-
-
-## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)
-#### User configurations, scripts and other files
-GIT_LOCAL_BRANCH="work"
-GIT_LOCAL_REPOSITORY_PATH="${BASE_PATH}/repo"
-SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"
-SCRIPTS_ORIGIN_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"
-SCRIPTS_LINK_PATH="${HOME}/scripts"
-CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/config"
-HOST_NAME="$(hostname)"
-HOST_CONFIG_BASE_PATH="${CONFIG_BASE_PATH}/hosts"
-HOST_CONFIG_PATH="${HOST_CONFIG_BASE_PATH}/${HOST_NAME}"
-HOST_CONFIG_DEPENDENCIES_FILE="${HOST_CONFIG_PATH}/dependency.list"
-HOST_CONFIG_DEPENDENCIES_SCRIPT="${HOST_CONFIG_PATH}/dependency[common-current].sh"
-INITIAL_CONFIG_DEPENDENCIES_FILE="${CONFIG_BASE_PATH}/common.dependency.list"
-SETUP_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/setup"
-SETUP_SETUP_FILE="${SETUP_BASE_PATH}/setup.sh"
-SETUP_CONFIG_FILE="${SETUP_BASE_PATH}/config.sh"
-EXECUTION_PATH="$(pwd)"
-
-
 ## DEFINING HELPER FUNCTIONS
+writeVariableFile() {
+	local FILE
+	FILE=$1
+
+	echo '#!/bin/bash' >> "${FILE}"
+	echo '' >> "${FILE}"
+	echo '## CONFIGURATION VARIABLES' >> "${FILE}"
+	echo 'BASE_PATH="/home/shared"' >> "${FILE}"
+	echo "PROFILE_NAME=\"$(hostname)\"" >> "${FILE}"
+	echo 'GIT_REPOSITORY_URL="https://github.com/rhlobo/homeConfig.git"' >> "${FILE}"
+	echo '# GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"' >> "${FILE}"
+	echo 'GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"' >> "${FILE}"
+	echo '' >> "${FILE}"
+	echo '' >> "${FILE}"
+	echo '## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)' >> "${FILE}"
+	echo 'GIT_LOCAL_BRANCH="work"' >> "${FILE}"
+	echo 'GIT_LOCAL_REPOSITORY_PATH="${BASE_PATH}/repo"' >> "${FILE}"
+	echo 'SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"' >> "${FILE}"
+	echo 'SCRIPTS_ORIGIN_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"' >> "${FILE}"
+	echo 'SCRIPTS_LINK_PATH="${HOME}/scripts"' >> "${FILE}"
+	echo 'CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/config"' >> "${FILE}"
+	echo 'HOST_CONFIG_BASE_PATH="${CONFIG_BASE_PATH}/profiles"' >> "${FILE}"
+	echo 'HOST_CONFIG_PATH="${HOST_CONFIG_BASE_PATH}/${PROFILE_NAME}"' >> "${FILE}"
+	echo 'HOST_CONFIG_DEPENDENCIES_FILE="${HOST_CONFIG_PATH}/dependency.list"' >> "${FILE}"
+	echo 'HOST_CONFIG_DEPENDENCIES_SCRIPT="${HOST_CONFIG_PATH}/dependency[common-current].sh"' >> "${FILE}"
+	echo 'INITIAL_CONFIG_DEPENDENCIES_FILE="${CONFIG_BASE_PATH}/common.dependency.list"' >> "${FILE}"
+	echo 'SETUP_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/setup"' >> "${FILE}"
+	echo 'SETUP_EXECUTABLE="${SETUP_BASE_PATH}/setup.sh"' >> "${FILE}"
+	echo 'UPDATE_EXECUTABLE="${SETUP_BASE_PATH}/update.sh"' >> "${FILE}"
+	echo 'EXECUTION_PATH="$(pwd)"	' >> "${FILE}"
+}
 log() {
 	echo "$@" >&2
     return 0
 }
+
+
+## CREATING CONFIGURATION FILE
+CONFIG_FILE="${HOME}/homeConfig"
+if [ ! -f "${CONFIG_FILE}" ]; then
+	writeVariableFile "${CONFIG_FILE}"
+	sudo chmod +x "${CONFIG_FILE}"
+	vim "${CONFIG_FILE}"
+fi
+. "${CONFIG_FILE}"
 
 
 ## INSTALLING DEPENDENCIES
@@ -90,11 +103,11 @@ cd -
 
 
 ## CONFIGURATING HOST
-if [ -f "${SETUP_CONFIG_FILE}" ]; then
-	log "Loading setup configuration script '${SETUP_CONFIG_FILE}'."
-	. ${SETUP_CONFIG_FILE}
+if [ -f "${UPDATE_EXECUTABLE}" ]; then
+	log "Loading setup configuration script '${UPDATE_EXECUTABLE}'."
+	. ${UPDATE_EXECUTABLE}
 else
-	log "NOT POSSIBLE TO FIND '${SETUP_CONFIG_FILE}'. ABORTING..."
+	log "NOT POSSIBLE TO FIND '${UPDATE_EXECUTABLE}'. ABORTING..."
 	exit 1
 fi
 

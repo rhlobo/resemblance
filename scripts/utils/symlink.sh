@@ -1,5 +1,9 @@
+## LOADING CONFIGURATION
+. "${HOME}/homeConfig"
+
+
 ## LOADING HELPER FUNCTIONS
-. "${HOME}/scripts/utils/log.sh"
+. "${SCRIPTS_ORIGIN_PATH}/utils/log.sh"
 
 
 assureSymlink() {
@@ -20,7 +24,7 @@ assureSymlink() {
 		log "  Old symlink ${LINK} renamed."
 	elif [ -d "${LINK}" ] || [ -f "${LINK}" ]; then
 		if [ -f "${LINK}" ]; then
-			PATCH_FILE="${INTENDED_LINK_TARGET}_`hostname`_`date +%F_%T`.patch"
+			PATCH_FILE="${INTENDED_LINK_TARGET}_${PROFILE_NAME(`hostname`)_`date +%F_%T`.patch"
 			diff -uNr "${INTENDED_LINK_TARGET}" "${LINK}" > "${PATCH_FILE}"
 			log "  File ${LINK} already exists but will be replaced. Rollback patch created: '${PATCH_FILE}'"
 		fi

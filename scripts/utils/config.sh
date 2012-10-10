@@ -1,23 +1,10 @@
 ## LOADING CONFIGURATION
-. "${HOME}/homeConfig"
+. "${HOME}/resemblance"
 
 
 ## LOADING HELPER FUNCTIONS
 . "${SCRIPTS_BASE_PATH}/utils/log.sh"
 
-
-assureHostConfigDirectory() {
-	local ENV_CONFIG_PATH
-	ENV_CONFIG_PATH="$1"
-
-	log "Assuring host configuration directory existence."
-	if [ ! -d "${ENV_CONFIG_PATH}" ]; then
-		log "Creating host configuration directory '${ENV_CONFIG_PATH}'"
-		mkdir -p "${ENV_CONFIG_PATH}"
-	else
-		log "Host configuration directory already exists in '${ENV_CONFIG_PATH}'."
-	fi
-}
 
 updateHostDependenciesDescription() {
 	local DEPENDENCIES_FILE

@@ -2,26 +2,42 @@
 
 
 ## LOADING CONFIGURATION
-. "${HOME}/homeConfig"
+. "${HOME}/resemblance"
 
 
 ## LOADING HELPER FUNCTIONS
+. "${SCRIPTS_BASE_PATH}/utils/directory.sh"
 . "${SCRIPTS_BASE_PATH}/utils/symlink.sh"
 . "${SCRIPTS_BASE_PATH}/utils/config.sh"
 . "${SCRIPTS_BASE_PATH}/utils/log.sh"
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY
-### Setup script folder into computer
+log "Assuring scripts directory link existence."
 assureSymlink ${SCRIPTS_BASE_PATH} ${SCRIPTS_LINK_PATH}
 
+log "Assuring host configuration directory existence."
+assureDirectory "${CONFIG_HOST_PATH}"
+
+log "Assuring host configuration files directory existence."
+assureDirectory "${CONFIG_HOST_FILES_PATH}"
+
+### TODO VARRER PASTA DE ARQUIVOS DE CONFIGURAÇÃO VERIFICANDO LINK SIMBOLICO DE CADA UM
+### TODO	VARREDURA DEVE IGNORAR PRE E POS PROCESSAMENTO
+### TODO	NO LINK SIMBOLICO, AO SER CRIADO, TENTAR EXECUTAR PRE E POS PROCESSAMENTO
+
+### TODO Se o arquivo de dependencias nao existir, cria-lo, se existir, perguntar se é pra atuializa-lo de acordo com o sistema ou atualizar o sistema com ele
 ### Update machine dependency (package) list
-assureHostConfigDirectory "${HOST_CONFIG_PATH}"
-updateHostDependenciesDescription "${HOST_CONFIG_DEPENDENCIES_FILE}"
+updateHostDependenciesDescription "${CONFIG_HOST_DEPENDENCIES_FILE}"
 
 
-createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${HOST_CONFIG_DEPENDENCIES_FILE}" "${HOST_CONFIG_DEPENDENCIES_SCRIPT}"
-rm -R "${HOME}/homeConfig"
+### TODO Perguntar se quer varrer o home adicionando alguns arquivos/folders no repo
+
+
+### 
+
+#createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_SCRIPT}"
+#rm -R "${HOME}/resemblance"
 
 
 # names memoir, silhouette

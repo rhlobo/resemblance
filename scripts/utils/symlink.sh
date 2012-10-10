@@ -1,5 +1,5 @@
 ## LOADING CONFIGURATION
-. "${HOME}/homeConfig"
+. "${HOME}/resemblance"
 
 
 ## LOADING HELPER FUNCTIONS
@@ -32,4 +32,15 @@ assureSymlink() {
 	fi
 	log "  Creating new symlink '${LINK}' from '${INTENDED_LINK_TARGET}'"
 	sudo ln -s "${INTENDED_LINK_TARGET}" "${LINK}"
+}
+
+assureMultiSymlink() {
+	local TARGET_ROOT LINK_ROOT
+	TARGET_ROOT=$1
+	LINK_ROOT=$2
+
+	log "Multi-symlinking '${LINK_ROOT}' to '${TARGET_ROOT}'"
+	for file in "find ${TARGET} -type f"; do
+		echo "${file}"
+	done
 }

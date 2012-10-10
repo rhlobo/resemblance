@@ -3,7 +3,7 @@
 
 
 ## LOADING HELPER FUNCTIONS
-. "${SCRIPTS_ORIGIN_PATH}/utils/log.sh"
+. "${SCRIPTS_BASE_PATH}/utils/log.sh"
 
 
 assureHostConfigDirectory() {

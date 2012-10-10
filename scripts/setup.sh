@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 ## COMMUNICATING SETUP
 sudo echo "Initializing setup"
 
@@ -23,18 +24,20 @@ writeVariableFile() {
 	echo 'GIT_LOCAL_BRANCH="work"' >> "${FILE}"
 	echo 'GIT_LOCAL_REPOSITORY_PATH="${BASE_PATH}/repo"' >> "${FILE}"
 	echo 'SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"' >> "${FILE}"
-	echo 'SCRIPTS_ORIGIN_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"' >> "${FILE}"
+	echo 'SCRIPTS_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"' >> "${FILE}"
 	echo 'SCRIPTS_LINK_PATH="${HOME}/scripts"' >> "${FILE}"
 	echo 'CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/config"' >> "${FILE}"
 	echo 'HOST_CONFIG_BASE_PATH="${CONFIG_BASE_PATH}/profiles"' >> "${FILE}"
 	echo 'HOST_CONFIG_PATH="${HOST_CONFIG_BASE_PATH}/${PROFILE_NAME}"' >> "${FILE}"
 	echo 'HOST_CONFIG_DEPENDENCIES_FILE="${HOST_CONFIG_PATH}/dependency.list"' >> "${FILE}"
-	echo 'HOST_CONFIG_DEPENDENCIES_SCRIPT="${HOST_CONFIG_PATH}/dependency[common-current].sh"' >> "${FILE}"
-	echo 'INITIAL_CONFIG_DEPENDENCIES_FILE="${CONFIG_BASE_PATH}/common.dependency.list"' >> "${FILE}"
-	echo 'SETUP_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/setup"' >> "${FILE}"
-	echo 'SETUP_EXECUTABLE="${SETUP_BASE_PATH}/setup.sh"' >> "${FILE}"
-	echo 'UPDATE_EXECUTABLE="${SETUP_BASE_PATH}/update.sh"' >> "${FILE}"
+	echo 'SETUP_EXECUTABLE="${SCRIPTS_BASE_PATH}/setup.sh"' >> "${FILE}"
+	echo 'UPDATE_EXECUTABLE="${SCRIPTS_BASE_PATH}/update.sh"' >> "${FILE}"
 	echo 'EXECUTION_PATH="$(pwd)"	' >> "${FILE}"
+	echo '' >> "${FILE}"
+	echo '' >> "${FILE}"
+	echo '## TEMPORARY CONFIGURATIONS (SHOULD BE REMOVED SOMETIME)' >> "${FILE}"	
+	echo 'HOST_CONFIG_DEPENDENCIES_SCRIPT="${HOST_CONFIG_PATH}/dependency[common-current].cfg"' >> "${FILE}"
+	echo 'INITIAL_CONFIG_DEPENDENCIES_FILE="${HOST_CONFIG_BASE_PATH}/clean-ubuntu-12.04/dependency.list"' >> "${FILE}"
 }
 log() {
 	echo "$@" >&2

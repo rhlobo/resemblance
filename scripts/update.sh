@@ -1,23 +1,33 @@
+#!/bin/bash
+
+
 ## LOADING CONFIGURATION
 . "${HOME}/homeConfig"
 
 
 ## LOADING HELPER FUNCTIONS
-. "${SCRIPTS_ORIGIN_PATH}/utils/symlink.sh"
-. "${SCRIPTS_ORIGIN_PATH}/utils/config.sh"
-. "${SCRIPTS_ORIGIN_PATH}/utils/log.sh"
+. "${SCRIPTS_BASE_PATH}/utils/symlink.sh"
+. "${SCRIPTS_BASE_PATH}/utils/config.sh"
+. "${SCRIPTS_BASE_PATH}/utils/log.sh"
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY
 ### Setup script folder into computer
-assureSymlink ${SCRIPTS_ORIGIN_PATH} ${SCRIPTS_LINK_PATH}
+assureSymlink ${SCRIPTS_BASE_PATH} ${SCRIPTS_LINK_PATH}
 
 ### Update machine dependency (package) list
 assureHostConfigDirectory "${HOST_CONFIG_PATH}"
 updateHostDependenciesDescription "${HOST_CONFIG_DEPENDENCIES_FILE}"
+
+
 createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${HOST_CONFIG_DEPENDENCIES_FILE}" "${HOST_CONFIG_DEPENDENCIES_SCRIPT}"
+rm -R "${HOME}/homeConfig"
 
 
+# names memoir, silhouette
+#	change config file
+#	change repo folder name
+#	change script folder name
 
 # COMMAND TO CREATE/UPDATE A FILE(S) THAT DETAILS A PROFILE DEPENDENCY LIST
 # 	ppas
@@ -49,3 +59,5 @@ createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${HOST
 # 	Configure shell aliases, functions and other configurations
 
 # Configure dropbox, google drive (insync), ...
+
+

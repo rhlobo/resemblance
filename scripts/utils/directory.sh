@@ -1,5 +1,5 @@
 ## LOADING CONFIGURATION
-. "${HOME}/resemblance"
+. "${HOME}/.resemblancerc"
 
 
 ## LOADING HELPER FUNCTIONS
@@ -7,13 +7,13 @@
 
 
 assureDirectory() {
-	local PATH
-	PATH="$1"
+	local DIR_PATH
+	DIR_PATH="$1"
 
-	if [ ! -d "${PATH}" ]; then
-		log "> Creating directory '${PATH}'"
-		sudo mkdir -p "${PATH}"
+	if [ ! -d "${DIR_PATH}" ]; then
+		log "> Creating directory '${DIR_PATH}'"
+		mkdir -p "${DIR_PATH}"
 	else
-		log "> Directory already exists in '${PATH}'."
+		log "> Directory already exists in '${DIR_PATH}'."
 	fi
 }

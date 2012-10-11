@@ -2,7 +2,7 @@
 
 
 ## COMMUNICATING SETUP
-sudo echo "Initializing setup"
+sudo echo "- Initializing setup"
 
 
 ## DEFINING HELPER FUNCTIONS
@@ -11,6 +11,7 @@ writeVariableFile() {
 	FILE=$1
 
 	echo '#!/bin/bash' >> "${FILE}"
+	echo '' >> "${FILE}"
 	echo '' >> "${FILE}"
 	echo '## CONFIGURATION VARIABLES' >> "${FILE}"
 	echo 'BASE_PATH="/home/shared"' >> "${FILE}"
@@ -22,16 +23,18 @@ writeVariableFile() {
 	echo '' >> "${FILE}"
 	echo '## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)' >> "${FILE}"
 	echo 'GIT_LOCAL_BRANCH="work"' >> "${FILE}"
+	echo 'PROFILES_FOLDER_NAME="profiles"' >> "${FILE}"
 	echo 'GIT_LOCAL_REPOSITORY_PATH="${BASE_PATH}/resemblance"' >> "${FILE}"
 	echo 'SCRIPT_CURRENT_PATH="$(dirname $(readlink -f $0))"' >> "${FILE}"
 	echo 'SCRIPTS_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/scripts"' >> "${FILE}"
-	echo 'SCRIPTS_LINK_PATH="${HOME}/scripts"' >> "${FILE}"
-	echo 'CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/profiles"' >> "${FILE}"
+	echo 'SCRIPTS_LINK_PATH="${HOME}/.resemblance"' >> "${FILE}"
+	echo 'CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/${PROFILES_FOLDER_NAME}"' >> "${FILE}"
 	echo 'CONFIG_HOST_PATH="${CONFIG_BASE_PATH}/${PROFILE_NAME}"' >> "${FILE}"
 	echo 'CONFIG_HOST_FILES_PATH="${CONFIG_HOST_PATH}/config"' >> "${FILE}"
 	echo 'CONFIG_HOST_DEPENDENCIES_FILE="${CONFIG_HOST_PATH}/dependency.list"' >> "${FILE}"
 	echo 'SETUP_EXECUTABLE="${SCRIPTS_BASE_PATH}/setup.sh"' >> "${FILE}"
 	echo 'UPDATE_EXECUTABLE="${SCRIPTS_BASE_PATH}/update.sh"' >> "${FILE}"
+	echo 'DIRECTORY_SYMLINK_FILE_REGEX=".resemble_dir\$"' >> "${FILE}"
 	echo 'EXECUTION_PATH="$(pwd)"	' >> "${FILE}"
 	echo '' >> "${FILE}"
 	echo '' >> "${FILE}"
@@ -46,25 +49,31 @@ log() {
 
 
 ## CREATING CONFIGURATION FILE
-CONFIG_FILE="${HOME}/resemblance"
+CONFIG_FILE="${HOME}/.resemblancerc"
 if [ ! -f "${CONFIG_FILE}" ]; then
 	writeVariableFile "${CONFIG_FILE}"
 	sudo chmod +x "${CONFIG_FILE}"
-	vim "${CONFIG_FILE}"
+	"${EDITOR-vim}" "${CONFIG_FILE}"
 fi
 . "${CONFIG_FILE}"
 
 
+## LOADING HELPER FUNCTIONS
+if [ -f "${SCRIPTS_BASE_PATH}/utils/log.sh" ]; then 
+	. "${SCRIPTS_BASE_PATH}/utils/log.sh"
+fi
+
+
 ## INSTALLING DEPENDENCIES
 #### Installing git
-log "Assuring that git is installed and updated..." 
+log "- Assuring that git is installed and updated..." 
 sudo apt-get -y install git
 
 
 ## SETUP BASE PATH
 #### Creating base path [if needed]
 if [ ! -d ${BASE_PATH} ]; then
-	log "Creating the base directory: '${BASE_PATH}'" 
+	log "- Creating the base directory: '${BASE_PATH}'" 
 	sudo mkdir -p ${BASE_PATH}
 	sudo chown ${USER}:${USER} ${BASE_PATH}
 fi
@@ -73,7 +82,7 @@ fi
 ## LOADING USER HOME CONFIGURATION AND SCRIPTS DIRECTORY
 #### Creating repository path [if needed]
 if [ ! -d ${GIT_LOCAL_REPOSITORY_PATH} ]; then
-	log "Creating the repository directory: '${GIT_LOCAL_REPOSITORY_PATH}'" 
+	log "- Creating the repository directory: '${GIT_LOCAL_REPOSITORY_PATH}'" 
 	sudo mkdir -p ${GIT_LOCAL_REPOSITORY_PATH}
 	sudo chown ${USER}:${USER} ${GIT_LOCAL_REPOSITORY_PATH}
 fi
@@ -81,44 +90,44 @@ fi
 #### Clone script and configuration into local git repository
 ###### Clone git repository [if needed]
 cd ${GIT_LOCAL_REPOSITORY_PATH}
-log "Checking if the local git repository is configured." 
+log "- Checking if the local git repository is configured." 
 if [ "`git rev-parse --is-inside-work-tree`" ]; then 
-	log "The local repository is already set." 
+	log "-- The local repository is already set." 
 else
-	log "Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
+	log "-- Creating local repository in ${GIT_LOCAL_REPOSITORY_PATH}" 
 	git clone ${GIT_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	if [ "`git rev-parse --is-inside-work-tree`" ]; then 
-		log "The local repository was set." 
+		log "--- The local repository is now set." 
 	else
-		log "Could not clone the repository as authenticated user. Going to use read-only mode."
+		log "--- Could not clone the repository as authenticated user. Going to use read-only mode."
 		git clone ${GIT_READONLY_REPOSITORY_URL} ${GIT_LOCAL_REPOSITORY_PATH}
 	fi
 fi
 ###### Create a branch [if needed]
-log "Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 
+log "- Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 
 git show-ref --verify --quiet refs/heads/${GIT_LOCAL_BRANCH} || {
-	log "Creating local branch '${GIT_LOCAL_BRANCH}'" 
+	log "-- Creating local branch '${GIT_LOCAL_BRANCH}'" 
 	git branch "${GIT_LOCAL_BRANCH}"
 }
 git checkout "${GIT_LOCAL_BRANCH}"
-log "Returning to the execution directory:" 
+log "- Returning to the execution directory:" 
 cd -
 
 
 ## CONFIGURATING HOST
 if [ -f "${UPDATE_EXECUTABLE}" ]; then
-	log "Loading setup configuration script '${UPDATE_EXECUTABLE}'."
+	log "- Loading setup configuration script '${UPDATE_EXECUTABLE}'."
 	. ${UPDATE_EXECUTABLE}
 else
-	log "NOT POSSIBLE TO FIND '${UPDATE_EXECUTABLE}'. ABORTING..."
+	log "[ERROR] NOT POSSIBLE TO FIND '${UPDATE_EXECUTABLE}'. ABORTING..."
 	exit 1
 fi
 
 
 ## FINALIZING SETUP
 #### Returning to the execution directory
-log "Returning to the execution directory" 
+log "- Returning to the execution directory" 
 cd "${EXECUTION_PATH}"
 
 #### Displaying success message
-log "Setup complete."
+log "Setup is complete."

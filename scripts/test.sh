@@ -2,7 +2,7 @@
 
 
 ## LOADING CONFIGURATION
-. "${HOME}/resemblance"
+. "${HOME}/.resemblancerc"
 
 
 ## LOADING HELPER FUNCTIONS
@@ -12,4 +12,4 @@
 . "${SCRIPTS_BASE_PATH}/utils/log.sh"
 
 
-assureMultiSymlink /home/shared/repo/profiles/oncast-rhlobo/config /
+echo "$(dirname /home/shared/resemblance/profiles/oncast-rhlobo/config)"

@@ -1,5 +1,5 @@
 ## LOADING CONFIGURATION
-. "${HOME}/resemblance"
+. "${HOME}/.resemblancerc"
 
 
 ## LOADING HELPER FUNCTIONS

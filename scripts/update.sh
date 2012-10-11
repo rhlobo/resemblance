@@ -2,7 +2,7 @@
 
 
 ## LOADING CONFIGURATION
-. "${HOME}/resemblance"
+. "${HOME}/.resemblancerc"
 
 
 ## LOADING HELPER FUNCTIONS
@@ -13,14 +13,19 @@
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY
-log "Assuring scripts directory link existence."
+log "- Assuring scripts directory link existence."
 assureSymlink ${SCRIPTS_BASE_PATH} ${SCRIPTS_LINK_PATH}
 
-log "Assuring host configuration directory existence."
+log "- Assuring host configuration directory existence."
 assureDirectory "${CONFIG_HOST_PATH}"
 
-log "Assuring host configuration files directory existence."
+log "- Assuring host configuration files directory existence."
 assureDirectory "${CONFIG_HOST_FILES_PATH}"
+
+
+## ASSURING ALL PROFILE FILES ARE SYMLINKED
+log "- Scanning profile file hierarchy assuring everything is symlinked correctly."
+assureMultiSymlink "${CONFIG_HOST_FILES_PATH}" ""
 
 ### TODO VARRER PASTA DE ARQUIVOS DE CONFIGURAÇÃO VERIFICANDO LINK SIMBOLICO DE CADA UM
 ### TODO	VARREDURA DEVE IGNORAR PRE E POS PROCESSAMENTO
@@ -37,7 +42,7 @@ updateHostDependenciesDescription "${CONFIG_HOST_DEPENDENCIES_FILE}"
 ### 
 
 #createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_SCRIPT}"
-#rm -R "${HOME}/resemblance"
+#rm -R "${HOME}/.resemblancerc"
 
 
 # names memoir, silhouette

@@ -55,22 +55,23 @@ assureMultiSymlink() {
 	for file in $(find "${TARGET_ROOT}" -type f | grep "${DIRECTORY_SYMLINK_FILE_REGEX}" | sed "s/${DIRECTORY_SYMLINK_FILE_REGEX}//g"); do
 		TARGET_LIST=$(echo "${TARGET_LIST}" | grep -v "^${file}\/")
 		if [ -d "${file}" ]; then
-			_shouldAssureSymlink "${file}"
+			_shouldAssureSymlink "${file}" "${LINK_ROOT}"
 		fi
 	done
 
 	for file in $(echo "${TARGET_LIST}" | grep "^\S*"); do
-		_shouldAssureSymlink "${file}"
+		_shouldAssureSymlink "${file}" "${LINK_ROOT}"
 	done
 }
 
 _shouldAssureSymlink() {
-	local TARGET_FILE LINK REGEX
+	local TARGET_FILE LINK_ROOT LINK REGEX
 	LINK=$1
+	LINK_ROOT=$2
 	REGEX="s/^.*\/${PROFILES_FOLDER_NAME-"profiles"}\/${PROFILE_NAME-$(hostname)}\/config\//\//g"
 	TARGET_FILE=$(echo "${file}" | sed "${REGEX}")
 
-	_fakeAssureSymlink "${TARGET_FILE}" "${LINK}"
+	_fakeAssureSymlink "${TARGET_FILE}" "${LINK_ROOT}${LINK}"
 }
 
 _fakeAssureSymlink() {

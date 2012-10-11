@@ -25,7 +25,8 @@ assureDirectory "${CONFIG_HOST_FILES_PATH}"
 
 ## ASSURING ALL PROFILE FILES ARE SYMLINKED
 log "- Scanning profile file hierarchy assuring everything is symlinked correctly."
-assureMultiSymlink "${CONFIG_HOST_FILES_PATH}" ""
+assureMultiSymlink "${CONFIG_HOST_FILES_PATH}" "${LINKING_ROOT_PATH}"
+
 
 ### TODO VARRER PASTA DE ARQUIVOS DE CONFIGURAÇÃO VERIFICANDO LINK SIMBOLICO DE CADA UM
 ### TODO	VARREDURA DEVE IGNORAR PRE E POS PROCESSAMENTO

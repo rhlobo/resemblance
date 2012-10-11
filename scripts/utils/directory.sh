@@ -11,9 +11,9 @@ assureDirectory() {
 	DIR_PATH="$1"
 
 	if [ ! -d "${DIR_PATH}" ]; then
-		log "> Creating directory '${DIR_PATH}'"
+		log "-- Creating directory '${DIR_PATH}'"
 		mkdir -p "${DIR_PATH}"
 	else
-		log "> Directory already exists in '${DIR_PATH}'."
+		log "-- Directory already exists in '${DIR_PATH}'."
 	fi
 }

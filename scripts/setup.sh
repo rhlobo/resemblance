@@ -16,6 +16,7 @@ writeVariableFile() {
 	echo '## CONFIGURATION VARIABLES' >> "${FILE}"
 	echo 'BASE_PATH="/home/shared"' >> "${FILE}"
 	echo "PROFILE_NAME=\"$(hostname)\"" >> "${FILE}"
+	echo "LINKING_ROOT_PATH=\"${HOME}\"" >> "${FILE}"
 	echo 'GIT_REPOSITORY_URL="https://github.com/rhlobo/homeConfig.git"' >> "${FILE}"
 	echo '# GIT_REPOSITORY_URL="git@github.com:rhlobo/homeConfig.git"' >> "${FILE}"
 	echo 'GIT_READONLY_REPOSITORY_URL="git://github.com/rhlobo/homeConfig.git"' >> "${FILE}"

@@ -31,6 +31,7 @@ assureMultiSymlink "${CONFIG_HOST_FILES_PATH}" "${LINKING_ROOT_PATH}"
 ### TODO VARRER PASTA DE ARQUIVOS DE CONFIGURAÇÃO VERIFICANDO LINK SIMBOLICO DE CADA UM
 ### TODO	VARREDURA DEVE IGNORAR PRE E POS PROCESSAMENTO
 ### TODO	NO LINK SIMBOLICO, AO SER CRIADO, TENTAR EXECUTAR PRE E POS PROCESSAMENTO
+### TODO 		Change directory before and after scripts
 
 ### TODO Se o arquivo de dependencias nao existir, cria-lo, se existir, perguntar se é pra atuializa-lo de acordo com o sistema ou atualizar o sistema com ele
 ### Update machine dependency (package) list

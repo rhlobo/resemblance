@@ -31,8 +31,8 @@ assureSymlink() {
 		sudo rm -R "${LINK}"		
 	fi
 
-	log "--- Verifying needed directory for link creation."
 	aux="$(dirname ${LINK})"
+	log "--- Verifying needed directory for link creation (${aux})."
 	if [ ! -d "${aux}" ]; then
 		log "---- Creating needed directory structure '${aux}'..."
 		mkdir -p "${aux}"
@@ -40,8 +40,24 @@ assureSymlink() {
 		log "---- Directory structure is okay."
 	fi
 
+	aux="${INTENDED_LINK_TARGET}${SYMLINK_PRESCRIPT_SUFFIX}"
+	log "--- Verifying the existance of a symlink pre script '${aux}'."
+	if [ -f "${aux}" ]; then
+		chmod +x "${aux}"
+		log "---- Symlink pre script '${aux}' found: executing."
+		. "${aux}"
+	fi
+
 	log "--- Creating new symlink '${LINK}' from '${INTENDED_LINK_TARGET}'"
 	sudo ln -s "${INTENDED_LINK_TARGET}" "${LINK}"
+
+	aux="${INTENDED_LINK_TARGET}${SYMLINK_POSSCRIPT_SUFFIX}"
+	log "--- Verifying the existance of a symlink pos script '${aux}'."
+	if [ -f "${aux}" ]; then
+		chmod +x "${aux}"
+		log "---- Symlink pos script '${aux}' found: executing."
+		. "${aux}"
+	fi
 }
 
 
@@ -51,8 +67,8 @@ assureMultiSymlink() {
 	LINK_ROOT=$2
 
 	log "Multi-symlinking '${LINK_ROOT}' to '${TARGET_ROOT}'"
-	TARGET_LIST=$(find "${TARGET_ROOT}" -type f | grep -v "${DIRECTORY_SYMLINK_FILE_REGEX}")
-	for file in $(find "${TARGET_ROOT}" -type f | grep "${DIRECTORY_SYMLINK_FILE_REGEX}" | sed "s/${DIRECTORY_SYMLINK_FILE_REGEX}//g"); do
+	TARGET_LIST=$(find "${TARGET_ROOT}" -type f | grep -v "${SYMLINK_DIRECTORY_SUFFIX}$" | grep -v "${SYMLINK_PRESCRIPT_SUFFIX}$" | grep -v "${SYMLINK_POSSCRIPT_SUFFIX}$")
+	for file in $(find "${TARGET_ROOT}" -type f | grep "${SYMLINK_DIRECTORY_SUFFIX}$" | sed "s/${SYMLINK_DIRECTORY_SUFFIX}//g"); do
 		TARGET_LIST=$(echo "${TARGET_LIST}" | grep -v "^${file}\/")
 		if [ -d "${file}" ]; then
 			_shouldAssureSymlink "${file}" "${LINK_ROOT}"
@@ -66,10 +82,10 @@ assureMultiSymlink() {
 
 _shouldAssureSymlink() {
 	local TARGET_FILE LINK_ROOT LINK REGEX
-	LINK=$1
+	TARGET_FILE=$1
 	LINK_ROOT=$2
 	REGEX="s/^.*\/${PROFILES_FOLDER_NAME-"profiles"}\/${PROFILE_NAME-$(hostname)}\/config\//\//g"
-	TARGET_FILE=$(echo "${file}" | sed "${REGEX}")
+	LINK=$(echo "${file}" | sed "${REGEX}")
 
 	_fakeAssureSymlink "${TARGET_FILE}" "${LINK_ROOT}${LINK}"
 }
@@ -79,7 +95,10 @@ _fakeAssureSymlink() {
 	INTENDED_LINK_TARGET=$1
 	LINK=$2
 
-	if [ ! -d "${INTENDED_LINK_TARGET}" ] && [ ! -f "${INTENDED_LINK_TARGET}" ]; then return; fi;
+	if [ ! -d "${INTENDED_LINK_TARGET}" ] && [ ! -f "${INTENDED_LINK_TARGET}" ]; then 
+		log "!!! File not found: '${INTENDED_LINK_TARGET}'."
+		return; 
+	fi
 
 	log "-- Assuring symlink '${LINK}' to '${INTENDED_LINK_TARGET}'"
 	if [ -h "${LINK}" ]; then
@@ -104,5 +123,17 @@ _fakeAssureSymlink() {
 		log "---- Directory structure is okay."
 	fi
 	
+	aux="${INTENDED_LINK_TARGET}${SYMLINK_PRESCRIPT_SUFFIX}"
+	log "--- Verifying the existance of a symlink pre script '${aux}'."
+	if [ -f "${aux}" ]; then
+		log "---- Symlink pre script '${aux}' found: executing."
+	fi
+
 	log "--- Creating new symlink '${LINK}' from '${INTENDED_LINK_TARGET}'"
+
+	aux="${INTENDED_LINK_TARGET}${SYMLINK_POSSCRIPT_SUFFIX}"
+	log "--- Verifying the existance of a symlink pos script '${aux}'."
+	if [ -f "${aux}" ]; then
+		log "---- Symlink pos script '${aux}' found: executing."
+	fi
 }

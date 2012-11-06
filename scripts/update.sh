@@ -13,74 +13,43 @@
 
 
 ## SETTING UP CONFIGURATION AND SCRIPTS DIRECTORY
-log "- Assuring scripts directory link existence."
+log "-\033[1m Assuring scripts directory link existence.\033[0m"
 assureSymlink ${SCRIPTS_BASE_PATH} ${SCRIPTS_LINK_PATH}
 
-log "- Assuring host configuration directory existence."
+log "-\033[1m Assuring host configuration directory existence.\033[0m"
 assureDirectory "${CONFIG_HOST_PATH}"
 
-log "- Assuring host configuration files directory existence."
+log "-\033[1m Assuring host configuration files directory existence.\033[0m"
 assureDirectory "${CONFIG_HOST_FILES_PATH}"
 
 
 ## ASSURING ALL PROFILE FILES ARE SYMLINKED
-log "- Scanning profile file hierarchy assuring everything is symlinked correctly."
+log "-\033[1m Scanning profile file hierarchy assuring everything is symlinked correctly.\033[0m"
 assureMultiSymlink "${CONFIG_HOST_FILES_PATH}" "${LINKING_ROOT_PATH}"
 
 
-### TODO VARRER PASTA DE ARQUIVOS DE CONFIGURAÇÃO VERIFICANDO LINK SIMBOLICO DE CADA UM
-### TODO	VARREDURA DEVE IGNORAR PRE E POS PROCESSAMENTO
-### TODO	NO LINK SIMBOLICO, AO SER CRIADO, TENTAR EXECUTAR PRE E POS PROCESSAMENTO
-### TODO 		Change directory before and after scripts
+## HANDLING DEPENDECIES
+log "-\033[1m Verifying if profile's dependency file exists at '${CONFIG_HOST_DEPENDENCIES_FILE}'.\033[0m"
+if [ ! -d "${CONFIG_HOST_DEPENDENCIES_FILE}" ]; then
+	log "-- Creating profile's dependency file '${CONFIG_HOST_DEPENDENCIES_FILE}'."
+	. "${UPDATE_DEPENDENCY_EXECUTABLE}"
+fi
 
-### TODO Se o arquivo de dependencias nao existir, cria-lo, se existir, perguntar se é pra atuializa-lo de acordo com o sistema ou atualizar o sistema com ele
-### Update machine dependency (package) list
-updateHostDependenciesDescription "${CONFIG_HOST_DEPENDENCIES_FILE}"
-
-
-### TODO Perguntar se quer varrer o home adicionando alguns arquivos/folders no repo
-
-
-### 
-
-#createDependencyInstallationScript "${INITIAL_CONFIG_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_FILE}" "${CONFIG_HOST_DEPENDENCIES_SCRIPT}"
-#rm -R "${HOME}/.resemblancerc"
-
-
-# names memoir, silhouette
-#	change config file
-#	change repo folder name
-#	change script folder name
-
-# COMMAND TO CREATE/UPDATE A FILE(S) THAT DETAILS A PROFILE DEPENDENCY LIST
-# 	ppas
-# 	oter repos
-# COMMAND THAT APPLYES ANOTHER PROFILE DEPENDENCY LIST INTO THIS
-# COMMAND TO MOVE A CONFIGURATION INTO REPO USING SYMLINK UTILS
-# COMMAND THAT APPLIES CURRENT PROFILE FILES INTO CURR SYSTEM USING SYMLINK UTILS 
-# COMMAND TO APPLY A HOST CONFIGURATION INTO THE CURRENT HOST > CHANGE PROFILE
-
-# COMMAND THAT SYNCS OTHER FILES IN DATA
-
-# COMMAND TO MAKE SNAPSHOT
-# COMMAND TO REVERT SNAPSHOT
-# COMMAND TO DESTROY SNAPSHOT
-# COMMAND TO LIST SNAPSHOTS
-
-# COMMAND TO TURN OFF MONITOR
-
-# GIT_REPOSITORY_URL should be setg by param, keeping the curr as a default
-# GIT_REPOSITORY_URL should be divided into two repositories, one for the configuration files and one for the script files.
-
-
-# COMMAND TO SAVE INSTALLED PACKAGES INTO A FILE
-# COMMAND TO APPLY PACKAGES FROM A FILE
-
-# USE SPARKLESHARE OR UNISON OR RSYNC TO SYNC DATA FILES BETWEEN HOSTS > The more automatic the better
-# CONFIGURE SHELL (bash or zsh)
-#	Configure shell path
-# 	Configure shell aliases, functions and other configurations
-
-# Configure dropbox, google drive (insync), ...
-
-
+log "\033[0;35m---------------------------------------------------------------------------------------------------\033[0m"
+log "\033[0;34m All profile files are contained withing a git repository. \033[0m"
+log "\033[0;34m You should manage your profiles manually. Use git to do it. \033[0m"
+log ""
+log "\033[0;34m The current profile's configuration files can be found within '\033[1;34m${CONFIG_HOST_FILES_PATH}\033[0;34m'. \033[0m"
+log "\033[0;34m - Running this script, you can assure there are symbolic links on the desired locations for each of the configuration files. \033[0m"
+log ""
+log "\033[0;34m The current profile's dependency file can be found in '\033[1;34m${CONFIG_HOST_DEPENDENCIES_FILE}\033[0;34m'. \033[0m"
+log "\033[0;34m - Dependencies are to be handled manually: The update and setup scripts will not change it after the initial creation. \033[0m"
+log ""
+log "\033[0;34m To update the dependency file from the machine current state, use: \033[0m"
+log "\033[1;33m  $ . ${UPDATE_DEPENDENCY_EXECUTABLE} \033[0m"
+log "\033[0;34m To update the machine current state from the dependency file, applying it, use: \033[0m"
+log "\033[1;33m  $ . ${UPDATE_MACHINE_EXECUTABLE} \033[0m"
+log ""
+log "\033[0;34m Scripts can also be executed from '\033[1;34m${SCRIPTS_LINK_PATH}\033[0;34m'. \033[0m"
+log "\033[0;34m Read the documentation for more information. \033[0m"
+log "\033[0;35m---------------------------------------------------------------------------------------------------\033[0m"

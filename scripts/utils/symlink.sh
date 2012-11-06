@@ -7,7 +7,7 @@
 
 
 assureSymlink() {
-	local INTENDED_LINK_TARGET LINK CURRENT_TARGET PATCH_FILE aux
+	local INTENDED_LINK_TARGET LINK CURRENT_TARGET patch_file aux link_dir
 	INTENDED_LINK_TARGET=$1
 	LINK=$2
 
@@ -24,18 +24,18 @@ assureSymlink() {
 		log "--- Old symlink ${LINK} renamed."
 	elif [ -d "${LINK}" ] || [ -f "${LINK}" ]; then
 		if [ -f "${LINK}" ]; then
-			PATCH_FILE="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch"
-			diff -uNr "${INTENDED_LINK_TARGET}" "${LINK}" > "${PATCH_FILE}"
-			log "--- File ${LINK} already exists but will be replaced. Rollback patch created: '${PATCH_FILE}'"
+			patch_file="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch"
+			diff -uNr "${INTENDED_LINK_TARGET}" "${LINK}" > "${patch_file}"
+			log "--- File ${LINK} already exists but will be replaced. Rollback patch created: '${patch_file}'"
 		fi
 		sudo rm -R "${LINK}"		
 	fi
 
-	aux="$(dirname ${LINK})"
-	log "--- Verifying needed directory for link creation (${aux})."
-	if [ ! -d "${aux}" ]; then
-		log "---- Creating needed directory structure '${aux}'..."
-		mkdir -p "${aux}"
+	link_dir="$(dirname ${LINK})"
+	log "--- Verifying needed directory for link creation (${link_dir})."
+	if [ ! -d "${link_dir}" ]; then
+		log "---- Creating needed directory structure '${link_dir}'..."
+		mkdir -p "${link_dir}"
 	else
 		log "---- Directory structure is okay."
 	fi
@@ -45,7 +45,9 @@ assureSymlink() {
 	if [ -f "${aux}" ]; then
 		chmod +x "${aux}"
 		log "---- Symlink pre script '${aux}' found: executing."
+		cd "${link_dir}"
 		. "${aux}"
+		cd "${EXECUTION_PATH}"
 	fi
 
 	log "--- Creating new symlink '${LINK}' from '${INTENDED_LINK_TARGET}'"
@@ -56,7 +58,9 @@ assureSymlink() {
 	if [ -f "${aux}" ]; then
 		chmod +x "${aux}"
 		log "---- Symlink pos script '${aux}' found: executing."
+		cd "${link_dir}"
 		. "${aux}"
+		cd "${EXECUTION_PATH}"
 	fi
 }
 
@@ -66,7 +70,7 @@ assureMultiSymlink() {
 	TARGET_ROOT=$1
 	LINK_ROOT=$2
 
-	log "Multi-symlinking '${LINK_ROOT}' to '${TARGET_ROOT}'"
+	log "-- Multi-symlinking '${LINK_ROOT}' to '${TARGET_ROOT}'"
 	TARGET_LIST=$(find "${TARGET_ROOT}" -type f | grep -v "${SYMLINK_DIRECTORY_SUFFIX}$" | grep -v "${SYMLINK_PRESCRIPT_SUFFIX}$" | grep -v "${SYMLINK_POSSCRIPT_SUFFIX}$")
 	for file in $(find "${TARGET_ROOT}" -type f | grep "${SYMLINK_DIRECTORY_SUFFIX}$" | sed "s/${SYMLINK_DIRECTORY_SUFFIX}//g"); do
 		TARGET_LIST=$(echo "${TARGET_LIST}" | grep -v "^${file}\/")
@@ -91,7 +95,7 @@ _shouldAssureSymlink() {
 }
 
 _fakeAssureSymlink() {
-	local INTENDED_LINK_TARGET LINK CURRENT_TARGET PATCH_FILE aux
+	local INTENDED_LINK_TARGET LINK CURRENT_TARGET patch_file aux link_dir
 	INTENDED_LINK_TARGET=$1
 	LINK=$2
 
@@ -110,8 +114,8 @@ _fakeAssureSymlink() {
 		log "--- Old symlink ${LINK} renamed."
 	elif [ -d "${LINK}" ] || [ -f "${LINK}" ]; then
 		if [ -f "${LINK}" ]; then
-			PATCH_FILE="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch"
-			log "--- File ${LINK} already exists but will be replaced. Rollback patch created: '${PATCH_FILE}'"
+			patch_file="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch"
+			log "--- File ${LINK} already exists but will be replaced. Rollback patch created: '${patch_file}'"
 		fi
 	fi
 
@@ -123,10 +127,20 @@ _fakeAssureSymlink() {
 		log "---- Directory structure is okay."
 	fi
 	
+	link_dir="$(dirname ${LINK})"
+	log "--- Verifying needed directory for link creation (${link_dir})."
+	if [ ! -d "${link_dir}" ]; then
+		log "---- Creating needed directory structure '${link_dir}'..."
+	else
+		log "---- Directory structure is okay."
+	fi
+
 	aux="${INTENDED_LINK_TARGET}${SYMLINK_PRESCRIPT_SUFFIX}"
 	log "--- Verifying the existance of a symlink pre script '${aux}'."
 	if [ -f "${aux}" ]; then
 		log "---- Symlink pre script '${aux}' found: executing."
+		cd "${link_dir}"
+		cd "${EXECUTION_PATH}"
 	fi
 
 	log "--- Creating new symlink '${LINK}' from '${INTENDED_LINK_TARGET}'"
@@ -135,5 +149,7 @@ _fakeAssureSymlink() {
 	log "--- Verifying the existance of a symlink pos script '${aux}'."
 	if [ -f "${aux}" ]; then
 		log "---- Symlink pos script '${aux}' found: executing."
+		cd "${link_dir}"
+		cd "${EXECUTION_PATH}"
 	fi
 }

@@ -1,4 +1,4 @@
 log() {
-	echo "$@" >&2
+	echo -e "$@" >&2
     return 0
 }

@@ -14,6 +14,15 @@ updateHostDependenciesDescription() {
 	sudo dpkg --get-selections | sed "s/\s*deinstall//" | sed "s/\s*install$//g" > "${DEPENDENCIES_FILE}"
 }
 
+updateMachineDependenciesFromDescription() {
+	local DEPENDENCIES_FILE
+	DEPENDENCIES_FILE="$1"
+
+	log "Updating host's installed package list '${DEPENDENCIES_FILE}'."
+	sudo dpkg --get-selections | sed "s/\s*deinstall//" | sed "s/\s*install$//g" > "${DEPENDENCIES_FILE}"
+	sudo apt-get update && cat "${DEPENDENCIES_FILE}" | xargs sudo apt-get install -y
+}
+
 _echoPackageToFile() {
 	local OUTPUT_FILE PACKAGE PREFIX_SYMBOL aux
 	OUTPUT_FILE=$1

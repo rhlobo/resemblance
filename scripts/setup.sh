@@ -2,7 +2,7 @@
 
 
 ## COMMUNICATING SETUP
-sudo echo "- Initializing setup"
+sudo echo -e "-\033[1m Initializing setup\033[0m"
 
 
 ## DEFINING HELPER FUNCTIONS
@@ -35,9 +35,12 @@ writeVariableFile() {
 	echo 'CONFIG_BASE_PATH="${GIT_LOCAL_REPOSITORY_PATH}/${PROFILES_FOLDER_NAME}"' >> "${FILE}"
 	echo 'CONFIG_HOST_PATH="${CONFIG_BASE_PATH}/${PROFILE_NAME}"' >> "${FILE}"
 	echo 'CONFIG_HOST_FILES_PATH="${CONFIG_HOST_PATH}/config"' >> "${FILE}"
+	echo 'CONFIG_HOST_APTREPOS_PATH="${CONFIG_HOST_PATH}/apt"' >> "${FILE}"
 	echo 'CONFIG_HOST_DEPENDENCIES_FILE="${CONFIG_HOST_PATH}/dependency.list"' >> "${FILE}"
 	echo 'SETUP_EXECUTABLE="${SCRIPTS_BASE_PATH}/setup.sh"' >> "${FILE}"
 	echo 'UPDATE_EXECUTABLE="${SCRIPTS_BASE_PATH}/update.sh"' >> "${FILE}"
+	echo 'UPDATE_DEPENDENCY_EXECUTABLE="${SCRIPTS_BASE_PATH}/update-dependency-file.sh"' >> "${FILE}"
+	echo 'UPDATE_MACHINE_EXECUTABLE="${SCRIPTS_BASE_PATH}/update-machine-dependencies"' >> "${FILE}"
 	echo 'EXECUTION_PATH="$(pwd)"	' >> "${FILE}"
 	echo '' >> "${FILE}"
 	echo '' >> "${FILE}"
@@ -69,14 +72,14 @@ fi
 
 ## INSTALLING DEPENDENCIES
 #### Installing git
-log "- Assuring that git is installed and updated..." 
+log "-\033[1m Assuring that git is installed and updated...\033[0m" 
 sudo apt-get -y install git
 
 
 ## SETUP BASE PATH
 #### Creating base path [if needed]
 if [ ! -d ${BASE_PATH} ]; then
-	log "- Creating the base directory: '${BASE_PATH}'" 
+	log "-\033[1m Creating the base directory: '${BASE_PATH}'\033[0m" 
 	sudo mkdir -p ${BASE_PATH}
 	sudo chown ${USER}:${USER} ${BASE_PATH}
 fi
@@ -85,15 +88,15 @@ fi
 ## LOADING USER HOME CONFIGURATION AND SCRIPTS DIRECTORY
 #### Creating repository path [if needed]
 if [ ! -d ${GIT_LOCAL_REPOSITORY_PATH} ]; then
-	log "- Creating the repository directory: '${GIT_LOCAL_REPOSITORY_PATH}'" 
+	log "-\033[1m Creating the repository directory: '${GIT_LOCAL_REPOSITORY_PATH}'\033[0m" 
 	sudo mkdir -p ${GIT_LOCAL_REPOSITORY_PATH}
 	sudo chown ${USER}:${USER} ${GIT_LOCAL_REPOSITORY_PATH}
 fi
 
 #### Clone script and configuration into local git repository
 ###### Clone git repository [if needed]
-cd ${GIT_LOCAL_REPOSITORY_PATH}
-log "- Checking if the local git repository is configured." 
+cd "${GIT_LOCAL_REPOSITORY_PATH}"
+log "-\033[1m Checking if the local git repository is configured.\033[0m" 
 if [ "`git rev-parse --is-inside-work-tree`" ]; then 
 	log "-- The local repository is already set." 
 else
@@ -107,19 +110,19 @@ else
 	fi
 fi
 ###### Create a branch [if needed]
-log "- Checking if local branch '${GIT_LOCAL_BRANCH}' exists." 
+log "-\033[1m Checking if local branch '${GIT_LOCAL_BRANCH}' exists.\033[0m" 
 git show-ref --verify --quiet refs/heads/${GIT_LOCAL_BRANCH} || {
 	log "-- Creating local branch '${GIT_LOCAL_BRANCH}'" 
 	git branch "${GIT_LOCAL_BRANCH}"
 }
 git checkout "${GIT_LOCAL_BRANCH}"
-log "- Returning to the execution directory:" 
-cd -
+log "-\033[1m Returning to the execution directory:\033[0m" 
+cd "${EXECUTION_PATH}"
 
 
 ## CONFIGURATING HOST
 if [ -f "${UPDATE_EXECUTABLE}" ]; then
-	log "- Loading setup configuration script '${UPDATE_EXECUTABLE}'."
+	log "-\033[1m Loading setup configuration script '${UPDATE_EXECUTABLE}'.\033[0m"
 	. ${UPDATE_EXECUTABLE}
 else
 	log "[ERROR] NOT POSSIBLE TO FIND '${UPDATE_EXECUTABLE}'. ABORTING..."
@@ -129,8 +132,8 @@ fi
 
 ## FINALIZING SETUP
 #### Returning to the execution directory
-log "- Returning to the execution directory" 
+log "-\033[1m Returning to the execution directory\033[0m" 
 cd "${EXECUTION_PATH}"
 
 #### Displaying success message
-log "Setup is complete."
+log "\033[1mSetup is complete.\033[0m"

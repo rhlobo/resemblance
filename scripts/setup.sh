@@ -59,7 +59,7 @@ CONFIG_FILE="${HOME}/.resemblancerc"
 if [ ! -f "${CONFIG_FILE}" ]; then
 	writeVariableFile "${CONFIG_FILE}"
 	sudo chmod +x "${CONFIG_FILE}"
-	"${EDITOR-vim}" "${CONFIG_FILE}"
+	"${EDITOR-vi}" "${CONFIG_FILE}"
 fi
 . "${CONFIG_FILE}"
 

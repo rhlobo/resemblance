@@ -91,7 +91,7 @@ _shouldAssureSymlink() {
 	REGEX="s/^.*\/${PROFILES_FOLDER_NAME-"profiles"}\/${PROFILE_NAME-$(hostname)}\/config\//\//g"
 	LINK=$(echo "${file}" | sed "${REGEX}")
 
-	_fakeAssureSymlink "${TARGET_FILE}" "${LINK_ROOT}${LINK}"
+	assureSymlink "${TARGET_FILE}" "${LINK_ROOT}${LINK}"
 }
 
 _fakeAssureSymlink() {

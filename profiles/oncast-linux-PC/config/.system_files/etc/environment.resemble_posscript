@@ -1,0 +1,3 @@
+#!/bin/bash
+sudo mv /etc/environment /etc/environment.bkp
+sudo ln -s ./environment /etc/environment

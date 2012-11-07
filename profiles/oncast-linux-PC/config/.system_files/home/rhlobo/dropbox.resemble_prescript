@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ln -s "${BASE_PATH}/dropbox" "${HOME}/dropbox"

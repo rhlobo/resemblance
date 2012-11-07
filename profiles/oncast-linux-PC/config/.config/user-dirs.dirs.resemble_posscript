@@ -1,0 +1,11 @@
+#!/bin/bash
+
+rm -R "${HOME}/Desktop"
+rm -R "${HOME}/Documents"
+rm -R "${HOME}/Downloads"
+rm -R "${HOME}/Music"
+rm -R "${HOME}/Pictures"
+rm -R "${HOME}/Public"
+rm -R "${HOME}/Templates"
+rm -R "${HOME}/Videos"
+rm "${HOME}/examples.desktop"

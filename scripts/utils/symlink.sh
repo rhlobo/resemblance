@@ -71,7 +71,7 @@ assureMultiSymlink() {
 	LINK_ROOT=$2
 
 	log "-- Multi-symlinking '${LINK_ROOT}' to '${TARGET_ROOT}'"
-	TARGET_LIST=$(find "${TARGET_ROOT}" -type f | grep -v "${SYMLINK_DIRECTORY_SUFFIX}$" | grep -v "${SYMLINK_PRESCRIPT_SUFFIX}$" | grep -v "${SYMLINK_POSSCRIPT_SUFFIX}$")
+	TARGET_LIST=$(find "${TARGET_ROOT}" -type f | grep -v "${SYMLINK_DIRECTORY_SUFFIX}$" | grep -v "${SYMLINK_PRESCRIPT_SUFFIX}$" | grep -v "${SYMLINK_POSSCRIPT_SUFFIX}$" | grep -v "~$")
 	for file in $(find "${TARGET_ROOT}" -type f | grep "${SYMLINK_DIRECTORY_SUFFIX}$" | sed "s/${SYMLINK_DIRECTORY_SUFFIX}//g"); do
 		TARGET_LIST=$(echo "${TARGET_LIST}" | grep -v "^${file}\/")
 		if [ -d "${file}" ]; then

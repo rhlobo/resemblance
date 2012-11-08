@@ -1074,6 +1074,7 @@ libxrandr2:i386
 libxrender1:i386
 libxres1:i386
 libxslt1.1:i386
+libxss1:i386
 libxt6:i386
 libxtst6:i386
 libxv1:i386
@@ -1368,6 +1369,8 @@ signon-plugin-password
 signon-ui
 signond
 simple-scan
+skype
+skype-bin
 smbclient
 sni-qt:i386
 software-center

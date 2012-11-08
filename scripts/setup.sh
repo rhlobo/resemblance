@@ -23,6 +23,7 @@ writeVariableFile() {
 	echo 'SYMLINK_DIRECTORY_SUFFIX=".resemble_dir"' >> "${FILE}"
 	echo 'SYMLINK_PRESCRIPT_SUFFIX=".resemble_prescript"' >> "${FILE}"
 	echo 'SYMLINK_POSSCRIPT_SUFFIX=".resemble_posscript"' >> "${FILE}"
+	echo 'SYMLINK_IGNORE_SUFFIX=".resemble_ignore"' >> "${FILE}"
 	echo '' >> "${FILE}"
 	echo '' >> "${FILE}"
 	echo '## SECONDARY VARIABLES (SHOULD NOT CONFIGURE)' >> "${FILE}"

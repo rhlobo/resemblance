@@ -15,9 +15,9 @@ The update script basically assures there are symbolic links for each of the fil
 
 ### Installing
 You should clone this repo, exclude it's *git* related files (.gitignore, .gitmodules, ... and .get itself), run the setup script and put the *profiles* directory under a private repository.
-    git clone git://github.com/rhlobo/resemblance.git
-    cd resemblance
-    rm -R .git*
+>    git clone git://github.com/rhlobo/resemblance.git
+>    cd resemblance
+>    rm -R .git*
 
 Alternativelly, you could use the instruction bellow instead of clonning this repository:
-    wget --no-check-certificate https://github.com/rhlobo/resemblance/raw/master/scripts/setup.sh -O - | sh
+>    wget --no-check-certificate https://github.com/rhlobo/resemblance/raw/master/scripts/setup.sh -O - | sh

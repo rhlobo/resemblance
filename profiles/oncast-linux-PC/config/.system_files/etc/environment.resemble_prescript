@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# Installing java oracle jdk 7
-. "${CONFIG_HOST_FILES_PATH}/.setup_scripts/java_installation.resemble_ignore"

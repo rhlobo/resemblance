@@ -1,7 +1,0 @@
-#!/bin/bash
-sudo bash -c "echo \"\" >> ~/.bashrc"
-sudo bash -c "echo \"\" >> ~/.bashrc"
-sudo bash -c "echo \"# Calling bash personal configurations\" >> ~/.bashrc"
-sudo bash -c "echo \"[ -f ~/.bash_extension ] && . ~/.bash_extension\" >> ~/.bashrc"
-
-

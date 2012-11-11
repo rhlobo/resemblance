@@ -1,0 +1,3 @@
+[submodule "profiles"]
+	path = profiles
+	url = ssh://git@bitbucket.org/rhlobo/resemblanceprofiles.git

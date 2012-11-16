@@ -24,7 +24,7 @@ assureSymlink() {
 		log "--- Old symlink ${LINK} renamed."
 	elif [ -d "${LINK}" ] || [ -f "${LINK}" ]; then
 		if [ -f "${LINK}" ]; then
-			patch_file="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch"
+			patch_file="${INTENDED_LINK_TARGET}_${PROFILE_NAME}_(`hostname`)_`date +%F_%T`.patch${SYMLINK_IGNORE_SUFFIX}"
 			diff -uNr "${INTENDED_LINK_TARGET}" "${LINK}" > "${patch_file}"
 			log "--- File ${LINK} already exists but will be replaced. Rollback patch created: '${patch_file}'"
 		fi
